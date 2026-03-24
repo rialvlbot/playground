@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kitten Timer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0e6ff;
+      transition: background 0.6s ease;
+    }
+
+    body.rest-mode { background: #e0eeff; }
+    body.work-mode { background: #fff0e0; }
+
+    .widget {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px;
+      width: 320px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #5a3e8a;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .mode-label {
+      font-size: 0.82rem;
+      color: #a08abd;
+      margin-bottom: 18px;
+      min-height: 1.2em;
+      transition: color 0.4s;
+    }
+
+    /* ── Kitten canvas ── */
+    .kitten-stage {
+      width: 180px;
+      height: 140px;
+      margin: 0 auto 18px;
+      position: relative;
+    }
+
+    canvas#kittenCanvas {
+      width: 180px;
+      height: 140px;
+    }
+
+    /* ── Timer display ── */
+    .timer-display {
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #3d2b6b;
+      margin-bottom: 20px;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.4s;
+    }
+
+    .timer-display.rest-color { color: #2b5ea7; }
+    .timer-display.work-color { color: #a7542b; }
+
+    /* ── Time picker ── */
+    .time-picker {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .time-btn {
+      background: #f0e6ff;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #5a3e8a;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .time-btn:hover { background: #ddd0f5; }
+    .time-btn.selected { border-color: #7c52bf; background: #e4d6ff; }
+
+    /* ── Mode buttons ── */
+    .mode-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .mode-btn {
+      padding: 10px 0;
+      border-radius: 14px;
+      border: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .rest-btn {
+      background: #ddeeff;
+      color: #2b5ea7;
+    }
+    .rest-btn:hover { background: #cce0ff; }
+    .rest-btn.active { background: #2b5ea7; color: #fff; box-shadow: 0 2px 8px rgba(43,94,167,0.3); }
+
+    .work-btn {
+      background: #fff0dd;
+      color: #a7542b;
+    }
+    .work-btn:hover { background: #ffe0c2; }
+    .work-btn.active { background: #a7542b; color: #fff; box-shadow: 0 2px 8px rgba(167,84,43,0.3); }
+
+    .mode-btn .emoji { font-size: 1.3rem; }
+
+    /* ── Control buttons ── */
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .ctrl-btn {
+      flex: 1;
+      padding: 11px 0;
+      border-radius: 14px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #startBtn {
+      background: #7c52bf;
+      color: #fff;
+    }
+    #startBtn:hover { background: #6a3fad; }
+    #startBtn:disabled { background: #c9b8e8; cursor: default; }
+
+    #resetBtn {
+      background: #f0e6ff;
+      color: #5a3e8a;
+    }
+    #resetBtn:hover { background: #ddd0f5; }
+
+    /* ── Done banner ── */
+    .done-banner {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.93);
+      border-radius: 24px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    .done-banner.show { display: flex; }
+    .done-banner .done-emoji { font-size: 3.5rem; animation: bounce 0.6s infinite alternate; }
+    .done-banner .done-text { font-size: 1.3rem; font-weight: 800; color: #3d2b6b; }
+    .done-banner .done-sub { font-size: 0.88rem; color: #a08abd; }
+    .done-banner button {
+      margin-top: 6px;
+      padding: 9px 28px;
+      border-radius: 12px;
+      border: none;
+      background: #7c52bf;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="widget">
+
+    <div class="done-banner" id="doneBanner">
+      <div class="done-emoji" id="doneEmoji">🎉</div>
+      <div class="done-text" id="doneText">Time's up!</div>
+      <div class="done-sub" id="doneSub">Great job, take a break!</div>
+      <button onclick="dismissDone()">Dismiss</button>
+    </div>
+
+    <div class="title">Kitten Timer 🐾</div>
+    <div class="mode-label" id="modeLabel">Choose a mode to start</div>
+
+    <div class="kitten-stage">
+      <canvas id="kittenCanvas" width="180" height="140"></canvas>
+    </div>
+
+    <div class="timer-display" id="timerDisplay">10:00</div>
+
+    <div class="time-picker">
+      <button class="time-btn" onclick="selectMinutes(5,this)">5 min</button>
+      <button class="time-btn selected" onclick="selectMinutes(10,this)">10 min</button>
+      <button class="time-btn" onclick="selectMinutes(15,this)">15 min</button>
+    </div>
+
+    <div class="mode-buttons">
+      <button class="mode-btn rest-btn" id="restBtn" onclick="selectMode('rest')">
+        <span class="emoji">😴</span> Start Rest
+      </button>
+      <button class="mode-btn work-btn" id="workBtn" onclick="selectMode('work')">
+        <span class="emoji">🧶</span> Start Work
+      </button>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="startBtn" onclick="toggleTimer()" disabled>Start</button>
+      <button class="ctrl-btn" id="resetBtn" onclick="resetTimer()">Reset</button>
+    </div>
+
+  </div>
+
+  <script>
+  // ─────────────────────────────────────────────
+  //  State
+  // ─────────────────────────────────────────────
+  let minutes     = 10;
+  let totalSecs   = minutes * 60;
+  let remaining   = totalSecs;
+  let running     = false;
+  let mode        = null;   // 'rest' | 'work'
+  let interval    = null;
+  let animFrame   = null;
+  let tick        = 0;      // animation tick counter
+
+  // ─────────────────────────────────────────────
+  //  Time selection
+  // ─────────────────────────────────────────────
+  function selectMinutes(m, btn) {
+    minutes   = m;
+    totalSecs = m * 60;
+    if (!running) {
+      remaining = totalSecs;
+      updateDisplay();
+    }
+    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  // ─────────────────────────────────────────────
+  //  Mode selection  →  also starts the timer
+  // ─────────────────────────────────────────────
+  function selectMode(m) {
+    if (running) stopTimer();
+    mode      = m;
+    remaining = totalSecs;
+    updateDisplay();
+    updateModeUI();
+    document.getElementById('startBtn').disabled = false;
+    startTimer();   // auto-start on mode click
+  }
+
+  function updateModeUI() {
+    const label   = document.getElementById('modeLabel');
+    const display = document.getElementById('timerDisplay');
+    const restBtn = document.getElementById('restBtn');
+    const workBtn = document.getElementById('workBtn');
+
+    restBtn.classList.toggle('active', mode === 'rest');
+    workBtn.classList.toggle('active', mode === 'work');
+    display.classList.remove('rest-color', 'work-color');
+
+    if (mode === 'rest') {
+      label.textContent = 'Rest mode — nap time, little one!';
+      display.classList.add('rest-color');
+      document.body.className = 'rest-mode';
+    } else if (mode === 'work') {
+      label.textContent = 'Work mode — let\'s get productive!';
+      display.classList.add('work-color');
+      document.body.className = 'work-mode';
+    } else {
+      label.textContent = 'Choose a mode to start';
+      document.body.className = '';
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  //  Timer logic
+  // ─────────────────────────────────────────────
+  function toggleTimer() {
+    if (!mode) return;
+    running ? stopTimer() : startTimer();
+  }
+
+  function startTimer() {
+    if (running) return;
+    running = true;
+    document.getElementById('startBtn').textContent = 'Pause';
+    interval = setInterval(() => {
+      remaining--;
+      updateDisplay();
+      if (remaining <= 0) {
+        stopTimer();
+        showDone();
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    running = false;
+    clearInterval(interval);
+    document.getElementById('startBtn').textContent = 'Resume';
+  }
+
+  function resetTimer() {
+    stopTimer();
+    mode      = null;
+    remaining = totalSecs;
+    running   = false;
+    updateDisplay();
+    updateModeUI();
+    document.getElementById('startBtn').disabled = true;
+    document.getElementById('startBtn').textContent = 'Start';
+  }
+
+  function updateDisplay() {
+    const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+    const s = (remaining % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+  }
+
+  // ─────────────────────────────────────────────
+  //  Done banner
+  // ─────────────────────────────────────────────
+  function showDone() {
+    const banner  = document.getElementById('doneBanner');
+    const emoji   = document.getElementById('doneEmoji');
+    const text    = document.getElementById('doneText');
+    const sub     = document.getElementById('doneSub');
+
+    if (mode === 'rest') {
+      emoji.textContent = '😸';
+      text.textContent  = 'Rest complete!';
+      sub.textContent   = 'Feeling refreshed? Time to work!';
+    } else {
+      emoji.textContent = '🎉';
+      text.textContent  = 'Work session done!';
+      sub.textContent   = 'Nice work! Go take a rest~';
+    }
+    banner.classList.add('show');
+    if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+  }
+
+  function dismissDone() {
+    document.getElementById('doneBanner').classList.remove('show');
+    resetTimer();
+  }
+
+  // ─────────────────────────────────────────────
+  //  Kitten canvas animation
+  // ─────────────────────────────────────────────
+  const canvas = document.getElementById('kittenCanvas');
+  const ctx    = canvas.getContext('2d');
+
+  function drawIdle() {
+    const t = tick / 60;
+    ctx.clearRect(0, 0, 180, 140);
+
+    // body
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath();
+    ctx.ellipse(90, 95, 40, 30, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // head
+    const headY = 58 + Math.sin(t * 2) * 1.5;
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath();
+    ctx.ellipse(90, headY, 26, 24, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ears
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath(); ctx.moveTo(70, headY-18); ctx.lineTo(64, headY-36); ctx.lineTo(78, headY-22); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(110, headY-18); ctx.lineTo(116, headY-36); ctx.lineTo(102, headY-22); ctx.fill();
+    ctx.fillStyle = '#e8b8b8';
+    ctx.beginPath(); ctx.moveTo(71, headY-20); ctx.lineTo(66, headY-33); ctx.lineTo(77, headY-23); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(109, headY-20); ctx.lineTo(114, headY-33); ctx.lineTo(103, headY-23); ctx.fill();
+
+    // eyes (blinking occasionally)
+    const blink = (Math.floor(t * 3) % 9 === 0);
+    ctx.fillStyle = '#3d2b1a';
+    if (blink) {
+      ctx.fillRect(79, headY-4, 10, 2);
+      ctx.fillRect(101, headY-4, 10, 2);
+    } else {
+      ctx.beginPath(); ctx.arc(84, headY-3, 5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(106, headY-3, 5, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(86, headY-5, 2, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(108, headY-5, 2, 0, Math.PI*2); ctx.fill();
+    }
+
+    // nose + mouth
+    ctx.fillStyle = '#e87878';
+    ctx.beginPath(); ctx.arc(90, headY+6, 3, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#8b5e3c'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(90, headY+9); ctx.lineTo(85, headY+14); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(90, headY+9); ctx.lineTo(95, headY+14); ctx.stroke();
+
+    // whiskers
+    ctx.strokeStyle = '#8b5e3c'; ctx.lineWidth = 1;
+    [[65,headY+4,83,headY+3],[62,headY+7,83,headY+7],[65,headY+10,83,headY+10]].forEach(([x1,y1,x2,y2])=>{
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+    [[115,headY+4,97,headY+3],[118,headY+7,97,headY+7],[115,headY+10,97,headY+10]].forEach(([x1,y1,x2,y2])=>{
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+
+    // tail (wagging gently)
+    const tailSwing = Math.sin(t * 1.5) * 18;
+    ctx.strokeStyle = '#c8a87e'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(125, 105);
+    ctx.quadraticCurveTo(145, 90 + tailSwing, 140, 70 + tailSwing);
+    ctx.stroke();
+  }
+
+  function drawRest() {
+    const t = tick / 60;
+    ctx.clearRect(0, 0, 180, 140);
+
+    // sleeping body (curled)
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath();
+    ctx.ellipse(90, 100, 52, 22, -0.15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // head resting down, slight bob
+    const bob = Math.sin(t * 1.2) * 1.2;
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath();
+    ctx.ellipse(65, 88 + bob, 22, 20, 0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ears
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath(); ctx.moveTo(50, 72+bob); ctx.lineTo(44, 55+bob); ctx.lineTo(58, 68+bob); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(68, 70+bob); ctx.lineTo(70, 52+bob); ctx.lineTo(78, 67+bob); ctx.fill();
+    ctx.fillStyle = '#e8b8b8';
+    ctx.beginPath(); ctx.moveTo(51, 73+bob); ctx.lineTo(46, 58+bob); ctx.lineTo(57, 70+bob); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(69, 71+bob); ctx.lineTo(71, 55+bob); ctx.lineTo(77, 68+bob); ctx.fill();
+
+    // closed eyes (sleeping lines)
+    ctx.strokeStyle = '#3d2b1a'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(58, 86+bob, 5, Math.PI, 0); ctx.stroke();
+    ctx.beginPath(); ctx.arc(74, 85+bob, 5, Math.PI, 0); ctx.stroke();
+
+    // nose
+    ctx.fillStyle = '#e87878';
+    ctx.beginPath(); ctx.arc(66, 92+bob, 2.5, 0, Math.PI*2); ctx.fill();
+
+    // whiskers
+    ctx.strokeStyle = '#8b5e3c'; ctx.lineWidth = 1;
+    [[42,90+bob,58,91+bob],[40,93+bob,57,93+bob]].forEach(([x1,y1,x2,y2])=>{
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+    [[90,91+bob,76,92+bob],[92,94+bob,77,94+bob]].forEach(([x1,y1,x2,y2])=>{
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+
+    // curled tail
+    ctx.strokeStyle = '#c8a87e'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(130, 106);
+    ctx.bezierCurveTo(148, 90, 148, 120, 118, 118);
+    ctx.stroke();
+
+    // Z Z Z floating
+    const zAlpha = (Math.sin(t * 1.8) + 1) / 2;
+    const z2Alpha = (Math.sin(t * 1.8 + 1.2) + 1) / 2;
+    const z3Alpha = (Math.sin(t * 1.8 + 2.4) + 1) / 2;
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = `rgba(100,140,200,${zAlpha})`;
+    ctx.fillText('z', 85, 65 - Math.sin(t*1.8)*4);
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillStyle = `rgba(100,140,200,${z2Alpha})`;
+    ctx.fillText('z', 96, 52 - Math.sin(t*1.8+1.2)*4);
+    ctx.font = 'bold 8px sans-serif';
+    ctx.fillStyle = `rgba(100,140,200,${z3Alpha})`;
+    ctx.fillText('z', 104, 42 - Math.sin(t*1.8+2.4)*4);
+  }
+
+  function drawWork() {
+    const t = tick / 60;
+    ctx.clearRect(0, 0, 180, 140);
+
+    // yarn ball (bouncing)
+    const yarnBounce = Math.abs(Math.sin(t * 4)) * 8;
+    const yarnX = 130 + Math.sin(t * 3) * 10;
+    const yarnY = 105 - yarnBounce;
+
+    ctx.fillStyle = '#e05a9a';
+    ctx.beginPath(); ctx.arc(yarnX, yarnY, 16, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#ff8cc8'; ctx.lineWidth = 2;
+    // yarn swirl lines
+    for (let i = 0; i < 5; i++) {
+      const ang = (t*3 + i * 1.2) % (Math.PI*2);
+      ctx.beginPath();
+      ctx.arc(yarnX, yarnY, 10, ang, ang + Math.PI * 0.7);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = '#c03070'; ctx.lineWidth = 1.5;
+    for (let i = 0; i < 4; i++) {
+      const ang = (t*-2 + i * 1.5) % (Math.PI*2);
+      ctx.beginPath();
+      ctx.arc(yarnX, yarnY, 6, ang, ang + Math.PI * 0.5);
+      ctx.stroke();
+    }
+
+    // yarn string to paw
+    ctx.strokeStyle = '#e05a9a'; ctx.lineWidth = 1.5; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(yarnX - 10, yarnY); ctx.lineTo(90, 102); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // body
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath();
+    ctx.ellipse(80, 105, 38, 26, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // head  (looking at yarn, slight tilt)
+    const headTilt = Math.sin(t * 3) * 0.12;
+    ctx.save();
+    ctx.translate(78, 72);
+    ctx.rotate(headTilt);
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath(); ctx.ellipse(0, 0, 24, 22, 0, 0, Math.PI*2); ctx.fill();
+
+    // ears
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath(); ctx.moveTo(-18,-14); ctx.lineTo(-22,-32); ctx.lineTo(-8,-18); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(18,-14); ctx.lineTo(22,-32); ctx.lineTo(8,-18); ctx.fill();
+    ctx.fillStyle = '#e8b8b8';
+    ctx.beginPath(); ctx.moveTo(-16,-15); ctx.lineTo(-20,-29); ctx.lineTo(-9,-19); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(16,-15); ctx.lineTo(20,-29); ctx.lineTo(9,-19); ctx.fill();
+
+    // excited eyes (wide open, tracking)
+    ctx.fillStyle = '#3d2b1a';
+    ctx.beginPath(); ctx.ellipse(-8, -4, 6, 7, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(10, -4, 6, 7, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(-6, -7, 2.5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(12, -7, 2.5, 0, Math.PI*2); ctx.fill();
+
+    // nose + excited open mouth
+    ctx.fillStyle = '#e87878';
+    ctx.beginPath(); ctx.arc(1, 6, 2.5, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#8b5e3c'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(1, 8); ctx.lineTo(-5, 14); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(1, 8); ctx.lineTo(7, 14); ctx.stroke();
+
+    // whiskers
+    ctx.strokeStyle = '#8b5e3c'; ctx.lineWidth = 1;
+    [[-22,4,-9,3],[-24,7,-9,7],[-22,10,-9,10]].forEach(([x1,y1,x2,y2])=>{
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+    [[22,4,11,3],[24,7,11,7],[22,10,11,10]].forEach(([x1,y1,x2,y2])=>{
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+
+    ctx.restore();
+
+    // front paw swiping at yarn
+    const pawSwipe = Math.sin(t * 4) * 14;
+    ctx.fillStyle = '#c8a87e';
+    ctx.beginPath();
+    ctx.ellipse(100 + pawSwipe, 102, 12, 8, -0.3, 0, Math.PI*2);
+    ctx.fill();
+
+    // tail (excited wag)
+    const tailWag = Math.sin(t * 5) * 25;
+    ctx.strokeStyle = '#c8a87e'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(48, 118);
+    ctx.quadraticCurveTo(28, 100 + tailWag, 25, 80 + tailWag);
+    ctx.stroke();
+  }
+
+  function animate() {
+    tick++;
+    if (mode === 'rest') {
+      drawRest();
+    } else if (mode === 'work') {
+      drawWork();
+    } else {
+      drawIdle();
+    }
+    animFrame = requestAnimationFrame(animate);
+  }
+
+  // ─────────────────────────────────────────────
+  //  Boot
+  // ─────────────────────────────────────────────
+  updateDisplay();
+  animate();
+  </script>
+</body>
+</html>
