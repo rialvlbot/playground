@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Made by Mages &mdash; Renaissance &amp; Fantasy Consignment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── NAVIGATION ── -->
+  <header class="site-header" id="top">
+    <nav class="nav-container">
+      <a href="#top" class="nav-logo">
+        <span class="logo-rune">✦</span>
+        <span class="logo-text">Made by Mages</span>
+        <span class="logo-rune">✦</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">&#9776;</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#how-it-works">Consign</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Renaissance &amp; Fantasy Consignment</p>
+      <h1 class="hero-title">Where Magic<br />Finds a New Home</h1>
+      <p class="hero-tagline">
+        Discover enchanted garments, arcane accessories, and storied treasures
+        curated by a community of artisans, cosplayers, and dreamers.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#shop" class="btn btn-primary">Browse the Arcane Market</a>
+        <a href="#how-it-works" class="btn btn-outline">Sell Your Wares</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll onward</span>
+      <span class="scroll-arrow">&#8595;</span>
+    </div>
+  </section>
+
+  <!-- ── ORNAMENTAL DIVIDER ── -->
+  <div class="divider divider-top">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L600,55 L1200,0 L1200,60 L0,60 Z" fill="var(--color-bg)"/>
+    </svg>
+    <div class="divider-ornament">&#10022; &#10022; &#10022;</div>
+  </div>
+
+  <!-- ── FEATURED LISTINGS ── -->
+  <section class="section shop-section" id="shop">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">The Arcane Market</h2>
+        <p class="section-subtitle">Hand-selected pieces from fellow adventurers &amp; artisans</p>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Wares</button>
+        <button class="filter-btn" data-filter="garments">Garments</button>
+        <button class="filter-btn" data-filter="accessories">Accessories</button>
+        <button class="filter-btn" data-filter="props">Props &amp; Decor</button>
+        <button class="filter-btn" data-filter="armor">Armor &amp; Arms</button>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+
+        <article class="product-card" data-category="garments">
+          <div class="product-image-wrap">
+            <div class="product-image product-image--gown"></div>
+            <span class="product-badge">New Arrival</span>
+          </div>
+          <div class="product-info">
+            <span class="product-category">Garments</span>
+            <h3 class="product-name">Velvet Sorceress Gown</h3>
+            <p class="product-desc">Floor-length deep violet velvet, gold trim at cuffs and collar. Worn twice at faire.</p>
+            <div class="product-footer">
+              <span class="product-price">$185</span>
+              <button class="btn btn-small">Inquire</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card" data-category="accessories">
+          <div class="product-image-wrap">
+            <div class="product-image product-image--circlet"></div>
+            <span class="product-badge product-badge--gold">Featured</span>
+          </div>
+          <div class="product-info">
+            <span class="product-category">Accessories</span>
+            <h3 class="product-name">Elven Circlet of Silver &amp; Moonstone</h3>
+            <p class="product-desc">Hand-wrought sterling silver with genuine moonstone cabochon. Adjustable sizing.</p>
+            <div class="product-footer">
+              <span class="product-price">$120</span>
+              <button class="btn btn-small">Inquire</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card" data-category="armor">
+          <div class="product-image-wrap">
+            <div class="product-image product-image--armor"></div>
+          </div>
+          <div class="product-info">
+            <span class="product-category">Armor &amp; Arms</span>
+            <h3 class="product-name">Knight's Pauldron Set</h3>
+            <p class="product-desc">Steel-finished resin pauldrons with leather strapping. Fits most adult sizes.</p>
+            <div class="product-footer">
+              <span class="product-price">$95</span>
+              <button class="btn btn-small">Inquire</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card" data-category="props">
+          <div class="product-image-wrap">
+            <div class="product-image product-image--lantern"></div>
+            <span class="product-badge product-badge--red">Last One</span>
+          </div>
+          <div class="product-info">
+            <span class="product-category">Props &amp; Decor</span>
+            <h3 class="product-name">Wrought Iron Mage's Lantern</h3>
+            <p class="product-desc">Hand-forged iron lantern with amber glass panels. Battery candle included.</p>
+            <div class="product-footer">
+              <span class="product-price">$65</span>
+              <button class="btn btn-small">Inquire</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card" data-category="garments">
+          <div class="product-image-wrap">
+            <div class="product-image product-image--cloak"></div>
+          </div>
+          <div class="product-info">
+            <span class="product-category">Garments</span>
+            <h3 class="product-name">Ranger's Hooded Travel Cloak</h3>
+            <p class="product-desc">Heavy wool blend in forest green. Deep hood, interior pockets, brass clasps.</p>
+            <div class="product-footer">
+              <span class="product-price">$140</span>
+              <button class="btn btn-small">Inquire</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card" data-category="accessories">
+          <div class="product-image-wrap">
+            <div class="product-image product-image--satchel"></div>
+            <span class="product-badge product-badge--gold">Featured</span>
+          </div>
+          <div class="product-info">
+            <span class="product-category">Accessories</span>
+            <h3 class="product-name">Alchemist's Leather Satchel</h3>
+            <p class="product-desc">Distressed brown leather with multiple pouches and a hand-stamped rune clasp.</p>
+            <div class="product-footer">
+              <span class="product-price">$78</span>
+              <button class="btn btn-small">Inquire</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="shop-cta">
+        <p>New items added every week from our community of consigners.</p>
+        <a href="#contact" class="btn btn-outline">Join the Waiting List</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ORNAMENTAL DIVIDER ── -->
+  <div class="divider divider-mid">
+    <div class="divider-ornament">&#10022; &#10022; &#10022;</div>
+  </div>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="section how-section" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">The Consignment Grimoire</h2>
+        <p class="section-subtitle">Three simple steps to sell your storied pieces</p>
+      </div>
+
+      <div class="steps-grid">
+
+        <div class="step-card">
+          <div class="step-icon">&#9993;</div>
+          <div class="step-number">I</div>
+          <h3 class="step-title">Submit Your Wares</h3>
+          <p class="step-desc">
+            Send us photos and a description of your piece via our contact form.
+            We accept garments, accessories, props, armor, and handcrafted goods
+            tied to renaissance, LARP, or fantasy themes.
+          </p>
+        </div>
+
+        <div class="step-connector">&#10148;</div>
+
+        <div class="step-card">
+          <div class="step-icon">&#128269;</div>
+          <div class="step-number">II</div>
+          <h3 class="step-title">We Curate &amp; List</h3>
+          <p class="step-desc">
+            Our team reviews each item for quality and theme. Approved pieces are
+            photographed, priced collaboratively with you, and listed in the
+            Arcane Market within 7 days.
+          </p>
+        </div>
+
+        <div class="step-connector">&#10148;</div>
+
+        <div class="step-card">
+          <div class="step-icon">&#127873;</div>
+          <div class="step-number">III</div>
+          <h3 class="step-title">Earn Your Gold</h3>
+          <p class="step-desc">
+            When your item sells, you receive <strong>70% of the sale price</strong>.
+            We handle payments, shipping coordination, and buyer communication
+            so you can focus on creating.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="consign-details">
+        <div class="consign-detail-item">
+          <span class="consign-icon">&#9670;</span>
+          <span><strong>70 / 30 split</strong> &mdash; you keep 70%</span>
+        </div>
+        <div class="consign-detail-item">
+          <span class="consign-icon">&#9670;</span>
+          <span><strong>No upfront fees</strong> &mdash; we earn when you earn</span>
+        </div>
+        <div class="consign-detail-item">
+          <span class="consign-icon">&#9670;</span>
+          <span><strong>90-day listing</strong> &mdash; items returned if unsold</span>
+        </div>
+        <div class="consign-detail-item">
+          <span class="consign-icon">&#9670;</span>
+          <span><strong>Ship or drop off</strong> &mdash; local &amp; remote sellers welcome</span>
+        </div>
+      </div>
+
+      <div class="how-cta">
+        <a href="#contact" class="btn btn-primary">Start Consigning</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ORNAMENTAL DIVIDER ── -->
+  <div class="divider divider-mid">
+    <div class="divider-ornament">&#10022; &#10022; &#10022;</div>
+  </div>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section class="section testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Words from the Realm</h2>
+      </div>
+      <div class="testimonials-grid">
+        <blockquote class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"I sold a corset I'd outgrown within two weeks. The team was communicative, fair, and genuinely cares about the community."</p>
+          <cite>&mdash; Seraphina V., LARP cosplayer</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"Found the most stunning elven cloak here. You can tell every item has a story. I feel like I'm shopping in a real fantasy bazaar."</p>
+          <cite>&mdash; Theron A., Ren Faire regular</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"As an artisan, this is the best platform I've found. My handmade wands sold out in days and the process was seamless."</p>
+          <cite>&mdash; Mirella D., prop maker</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section class="section about-section" id="about">
+    <div class="container about-container">
+      <div class="about-image-col">
+        <div class="about-image-frame">
+          <div class="about-image"></div>
+        </div>
+      </div>
+      <div class="about-text-col">
+        <span class="section-eyebrow">Our Story</span>
+        <h2 class="section-title text-left">A Market Born of Passion</h2>
+        <p>
+          Made by Mages began at a renaissance faire when two friends realized
+          that the most beautiful costumes and props often end up forgotten in
+          storage bins after the event. Too much love went into these pieces to
+          let them gather dust.
+        </p>
+        <p>
+          We built a curated marketplace where artisans, costumers, LARPers,
+          and fantasy enthusiasts can give their treasured items a second life
+          &mdash; and where buyers can find one-of-a-kind pieces that carry
+          real stories within their seams.
+        </p>
+        <p>
+          Every item in our market has been handled by human hands, worn in
+          enchanted fields, and imagined in worlds beyond the ordinary. We
+          believe that is worth something.
+        </p>
+        <div class="about-stats">
+          <div class="about-stat">
+            <span class="stat-number">500+</span>
+            <span class="stat-label">Items Sold</span>
+          </div>
+          <div class="about-stat">
+            <span class="stat-number">200+</span>
+            <span class="stat-label">Consigners</span>
+          </div>
+          <div class="about-stat">
+            <span class="stat-number">4.9 &#9733;</span>
+            <span class="stat-label">Avg. Rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section class="section contact-section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Send a Raven</h2>
+        <p class="section-subtitle">Questions, consignment inquiries, or just a friendly hello</p>
+      </div>
+
+      <div class="contact-layout">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Aldric the Wanderer" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject">
+              <option value="">Choose your quest...</option>
+              <option value="consign">I want to consign an item</option>
+              <option value="buy">Question about an item</option>
+              <option value="general">General inquiry</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us about your piece, your question, or your adventure..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Dispatch the Raven</button>
+          <div class="form-success" id="formSuccess">
+            <span>&#10003;</span> Your message has been sent! We'll reply within 2 business days.
+          </div>
+        </form>
+
+        <div class="contact-aside">
+          <div class="contact-info-card">
+            <h3>Find Us</h3>
+            <ul class="contact-info-list">
+              <li>
+                <span class="ci-icon">&#9670;</span>
+                <span><strong>Email</strong><br />hello@madebymages.com</span>
+              </li>
+              <li>
+                <span class="ci-icon">&#9670;</span>
+                <span><strong>Instagram</strong><br />@madebymages</span>
+              </li>
+              <li>
+                <span class="ci-icon">&#9670;</span>
+                <span><strong>Location</strong><br />Portland, OR &mdash; ships nationwide</span>
+              </li>
+              <li>
+                <span class="ci-icon">&#9670;</span>
+                <span><strong>Hours</strong><br />Mon–Fri, 10am–6pm PST</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="contact-info-card newsletter-card">
+            <h3>Join the Guild</h3>
+            <p>Get first access to new listings, faire announcements, and maker spotlights.</p>
+            <form class="newsletter-form" id="newsletterForm">
+              <input type="email" placeholder="your@email.com" required />
+              <button type="submit" class="btn btn-primary btn-full">Join</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <div class="footer-brand">
+        <span class="logo-rune">✦</span>
+        <span class="footer-logo-text">Made by Mages</span>
+        <span class="logo-rune">✦</span>
+        <p class="footer-tagline">Renaissance &amp; Fantasy Consignment</p>
+      </div>
+      <nav class="footer-nav">
+        <a href="#shop">Shop</a>
+        <a href="#how-it-works">Consign</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <p class="footer-legal">
+        &copy; 2026 Made by Mages. All rights reserved.
+        &nbsp;|&nbsp; Built with magic &amp; care.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── BACK TO TOP ── -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#9650;</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
